@@ -11,7 +11,7 @@ A comprehensive, full-stack clinical immunization management platform designed t
 | 1 | *ARYA PRAKASH* | *JEC25CS061* | Architecture & Full-Stack Integration |
 | 2 | *AMRUTHAVARSHINI KM* | *[JEC25CS037]* | Core Java OOP & Business Logic |
 | 3 | *Member 3* | *[Reg No]* | Web UI/UX & Responsive Front-End |
-| 4 | *Member 4* | *[Reg No]* | Database Persistence & Testing |
+| 4 | Ashline Mary Rajesh| JEC25CS064 | Database Persistence & Testing |
 
 
 > A Java-based Vaccination Management System developed as part of the KTU Object-Oriented Programming (OOP) project.
