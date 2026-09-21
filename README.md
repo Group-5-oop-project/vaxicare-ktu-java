@@ -9,7 +9,7 @@ A comprehensive, full-stack clinical immunization management platform designed t
 | Sl No. | Name | Register Number / Roll No. | Contribution / Role |
 |:---:|:---|:---|:---|
 | 1 | *ARYA PRAKASH* | *JEC25CS061* | Architecture & Full-Stack Integration |
-| 2 | *Member 2* | *[Reg No]* | Core Java OOP & Business Logic |
+| 2 | *AMRUTHAVARSHINI KM* | *[JEC25CS037]* | Core Java OOP & Business Logic |
 | 3 | *Member 3* | *[Reg No]* | Web UI/UX & Responsive Front-End |
 | 4 | *Member 4* | *[Reg No]* | Database Persistence & Testing |
 
