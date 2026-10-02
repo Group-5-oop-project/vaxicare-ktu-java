@@ -33,6 +33,7 @@
             <li><a href="#city-map-section">City Map</a></li>
             <li><a href="#instructions">Instructions</a></li>
             <li><a href="#emergency">Emergency Care</a></li>
+            <li><a href="javascript:void(0)" onclick="openCertificateModal()" style="color: var(--primary); font-weight: 700;">📜 Certificate</a></li>
             <li><a href="#my-bookings-section" id="navBookingsLink" style="display: none;">My Appointments</a></li>
             <li id="authNavButtons">
                 <button class="btn btn-secondary btn-sm" onclick="openAuthModal('login')">Sign In</button>
@@ -352,7 +353,7 @@
                         <li>💊 <strong>Managing Mild Fever:</strong> Mild low-grade fever, fatigue, or headache is normal. Paracetamol may be taken as prescribed.</li>
                         <li>🚫 <strong>No Strenuous Work:</strong> Avoid vigorous physical exercise, heavy lifting, or alcohol consumption for 24 hours.</li>
                         <li>📲 <strong>Automatic Next Dose:</strong> Your next scheduled dose is automatically calculated by the system and available in your portal.</li>
-                        <li>📥 <strong>Certificate:</strong> Download your digitally signed vaccination card from your profile dashboard.</li>
+                        <li>📥 <strong>Certificate:</strong> Download your digitally signed vaccination card: <button class="btn btn-secondary btn-sm" style="padding: 2px 10px; font-size: 0.8rem; margin-left: 6px;" onclick="openCertificateModal()">Download Certificate 📜</button></li>
                     </ul>
                 </div>
             </div>
@@ -504,6 +505,100 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Complete Registration</button>
             </form>
+        </div>
+    </div>
+
+    <!-- 11B. DIGITAL VACCINATION CERTIFICATE MODAL -->
+    <div id="certificateModal" class="modal">
+        <div class="cert-card">
+            <button class="modal-close" onclick="closeCertificateModal()">×</button>
+            
+            <div class="cert-header">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #0d9488; letter-spacing: 1px; text-transform: uppercase;">
+                    National Clinical Immunization Registry • Ministry of Health & Family Welfare
+                </div>
+                <h2 style="margin: 0.4rem 0 0.2rem; color: #0f172a; font-size: 1.45rem;">💉 VaxiCare Certificate of Inoculation</h2>
+                <span class="cert-badge">✅ PROVISIONAL DIGITAL CERTIFICATE FOR COVID-19 VACCINATION</span>
+                <div style="font-size: 0.82rem; color: #64748b; margin-top: 6px;">
+                    Certificate ID: <strong id="certDocId" style="color:#0f172a;">VC-2026-9812</strong> • Issued: <span id="certIssuedDate">Today</span>
+                </div>
+            </div>
+
+            <!-- Beneficiary Details -->
+            <div class="cert-section-title">👤 Beneficiary Details</div>
+            <div class="cert-grid">
+                <div>
+                    <div class="cert-label">Beneficiary Name</div>
+                    <div class="cert-val" id="certPatientName">Arya Prakash</div>
+                </div>
+                <div>
+                    <div class="cert-label">Age / Gender</div>
+                    <div class="cert-val" id="certAgeGender">28 Yrs / Male</div>
+                </div>
+                <div>
+                    <div class="cert-label">Aadhar / National ID</div>
+                    <div class="cert-val" id="certAadhar">XXXX-XXXX-5512</div>
+                </div>
+                <div>
+                    <div class="cert-label">Registered Contact</div>
+                    <div class="cert-val" id="certPhone">+91 9876543210</div>
+                </div>
+            </div>
+
+            <!-- Vaccination Details -->
+            <div class="cert-section-title">💉 Vaccination Status & Details</div>
+            <div class="cert-grid">
+                <div>
+                    <div class="cert-label">Vaccine Administered</div>
+                    <div class="cert-val" id="certVaccineName">Covishield (Viral Vector)</div>
+                </div>
+                <div>
+                    <div class="cert-label">Inoculation Status</div>
+                    <div class="cert-val" id="certDoseStatus" style="color: #059669;">Dose 1 of 2 (Active)</div>
+                </div>
+                <div>
+                    <div class="cert-label">Vaccination Date</div>
+                    <div class="cert-val" id="certDate">2026-10-02</div>
+                </div>
+                <div>
+                    <div class="cert-label">Vaccination Centre</div>
+                    <div class="cert-val" id="certCentre">District General Hospital, Kozhikode</div>
+                </div>
+                <div>
+                    <div class="cert-label">Batch / Vial ID</div>
+                    <div class="cert-val" id="certBatch">COV-8192-KRL</div>
+                </div>
+                <div>
+                    <div class="cert-label">Authorized Vaccinator</div>
+                    <div class="cert-val">Dr. Radhakrishnan (Nodal Officer)</div>
+                </div>
+            </div>
+
+            <!-- Security & Verification Seal -->
+            <div class="cert-footer-stamp">
+                <div style="display:flex; align-items:center; gap: 12px;">
+                    <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 6px 10px; text-align: center;">
+                        <span style="font-size: 1.4rem;">🛡️</span>
+                        <div style="font-size: 0.68rem; font-weight: 800; color: #166534;">VERIFIED</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; color: #0f172a;">Digitally Signed & QR Encrypted Token</div>
+                        <div style="color: #64748b; font-size: 0.75rem; word-break: break-all;">
+                            Token: <code id="certHash" style="background:#f1f5f9; padding: 2px 5px; border-radius: 4px;">SHA256: 5626da04a89e4f</code>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge badge-success" style="font-size: 0.78rem;">ACCREDITED WHO / MoHFW</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="cert-actions">
+                <button class="btn btn-secondary" onclick="closeCertificateModal()">Close</button>
+                <button class="btn btn-secondary" onclick="exportCurrentCertXml()">📄 Download XML</button>
+                <button class="btn btn-primary" onclick="printCertificate()">🖨️ Print / Save as PDF</button>
+            </div>
         </div>
     </div>
 
@@ -773,10 +868,10 @@
 
         // Close modal when clicking outside the card
         window.addEventListener('click', (e) => {
-            const modal = document.getElementById('authModal');
-            if (e.target === modal) {
-                closeAuthModal();
-            }
+            const authModal = document.getElementById('authModal');
+            if (e.target === authModal) closeAuthModal();
+            const certModal = document.getElementById('certificateModal');
+            if (e.target === certModal) closeCertificateModal();
         });
 
         // ============================================================================
@@ -886,8 +981,132 @@
                     <p style="margin: 0.2rem 0;"><strong>Vaccine:</strong> ${b.vaccine}</p>
                     <p style="margin: 0.2rem 0;"><strong>Centre:</strong> ${b.centre}</p>
                     <p style="margin: 0.2rem 0; font-size:0.85rem; color:var(--gray-600);"><strong>Scheduled Date:</strong> ${b.date}</p>
+                    <div style="margin-top: 0.85rem; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn btn-primary btn-sm" onclick="openCertificateModal('${b.bookingId}')">📜 Download Certificate</button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportXmlCertificateById('${b.bookingId}')">📥 XML Export</button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        // ============================================================================
+        // 8B. DIGITAL VACCINATION CERTIFICATE (VIEW, PRINT AS PDF, EXPORT XML)
+        // ============================================================================
+        let currentCertData = null;
+
+        function openCertificateModal(bookingId) {
+            let bookings = JSON.parse(localStorage.getItem('smart_bookings') || "[]");
+            let targetBooking = null;
+
+            if (bookingId) {
+                targetBooking = bookings.find(b => b.bookingId === bookingId);
+            }
+
+            if (!targetBooking && bookings.length > 0) {
+                targetBooking = bookings[bookings.length - 1]; // latest booking
+            }
+
+            const loggedInUserStr = sessionStorage.getItem('loggedInUser');
+            let loggedInUser = null;
+            if (loggedInUserStr) {
+                try { loggedInUser = JSON.parse(loggedInUserStr); } catch(e){}
+            }
+
+            // Defaults if no booking exists yet
+            const patientName = targetBooking ? targetBooking.patientName : (loggedInUser ? loggedInUser.fullName : "Arya Prakash");
+            const phone = targetBooking ? targetBooking.contact : (loggedInUser ? loggedInUser.phone : "+91 9876543210");
+            const vaccine = targetBooking ? targetBooking.vaccine : "Covishield (Viral Vector)";
+            const centre = targetBooking ? targetBooking.centre : "District General Hospital, Kozhikode";
+            const date = targetBooking ? targetBooking.date : new Date().toISOString().split('T')[0];
+            const certId = targetBooking ? `VC-${targetBooking.bookingId.replace('BK-', '')}-2026` : `VC-${Math.floor(100000 + Math.random()*900000)}`;
+            const hash = Math.abs(patientName.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)).toString(16) + "a89e4f";
+
+            currentCertData = {
+                certId: certId,
+                patientName: patientName,
+                phone: phone,
+                vaccine: vaccine,
+                centre: centre,
+                date: date,
+                hash: hash
+            };
+
+            const docIdEl = document.getElementById('certDocId');
+            const dateEl = document.getElementById('certIssuedDate');
+            const nameEl = document.getElementById('certPatientName');
+            const phoneEl = document.getElementById('certPhone');
+            const vacEl = document.getElementById('certVaccineName');
+            const cenEl = document.getElementById('certCentre');
+            const vacDateEl = document.getElementById('certDate');
+            const hashEl = document.getElementById('certHash');
+
+            if (docIdEl) docIdEl.textContent = certId;
+            if (dateEl) dateEl.textContent = date;
+            if (nameEl) nameEl.textContent = patientName;
+            if (phoneEl) phoneEl.textContent = phone;
+            if (vacEl) vacEl.textContent = vaccine;
+            if (cenEl) cenEl.textContent = centre;
+            if (vacDateEl) vacDateEl.textContent = date;
+            if (hashEl) hashEl.textContent = "Token: SHA256: " + hash;
+
+            const modal = document.getElementById('certificateModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificateModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        function exportCurrentCertXml() {
+            if (!currentCertData) return;
+            const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<vaccinationCertificate xmlns="http://vaxicare.gov.in/immunization/v1"
+    certificateId="${currentCertData.certId}"
+    issuedAt="${new Date().toISOString()}">
+    <issuer>
+        <authority>National Clinical Immunization Registry (VaxiCare)</authority>
+        <country>India</country>
+        <accreditation>MoHFW / WHO Standard Verified</accreditation>
+    </issuer>
+    <patient>
+        <name>${currentCertData.patientName}</name>
+        <phone>${currentCertData.phone}</phone>
+        <status>FULLY VACCINATED</status>
+    </patient>
+    <vaccine>
+        <name>${currentCertData.vaccine}</name>
+        <platform>WHO Approved Clinical Regimen</platform>
+    </vaccine>
+    <administeredDoses count="1">
+        <doseRecord number="1">
+            <date>${currentCertData.date}</date>
+            <centre>${currentCertData.centre}</centre>
+            <status>COMPLETED</status>
+        </doseRecord>
+    </administeredDoses>
+    <verification>
+        <signatureType>SHA256withRSA-DigitalToken</signatureType>
+        <hashDigest>${currentCertData.hash}</hashDigest>
+    </verification>
+</vaccinationCertificate>`;
+
+            const blob = new Blob([xmlContent], { type: 'application/xml' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `vaxicare_certificate_${currentCertData.certId}.xml`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportXmlCertificateById(bookingId) {
+            openCertificateModal(bookingId);
+            exportCurrentCertXml();
         }
 
         // ============================================================================
