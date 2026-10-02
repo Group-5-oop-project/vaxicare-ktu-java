@@ -807,6 +807,11 @@
                     });
                     const data = await res.json();
                     if (res.ok && data.success) {
+                        // Track this booking ID for the current session
+                        let sessionBookedIds = JSON.parse(sessionStorage.getItem('my_booked_ids') || "[]");
+                        sessionBookedIds.push(data.booking.bookingId);
+                        sessionStorage.setItem('my_booked_ids', JSON.stringify(sessionBookedIds));
+
                         alert(`✅ Appointment Successfully Booked!\n\nBooking ID: ${data.booking.bookingId}\nPatient: ${name}\nVaccine: ${vaccine}\nCentre: ${centre}\nSaved to Backend Database (database/appointments.json).\n\n⚠️ IMPORTANT: Please arrive 15 minutes before your slot and do not fast.`);
                         renderBookings();
                         checkBackendHealth();
@@ -827,6 +832,10 @@
                 date: new Date().toISOString().split('T')[0],
                 status: "CONFIRMED"
             };
+
+            let sessionBookedIds = JSON.parse(sessionStorage.getItem('my_booked_ids') || "[]");
+            sessionBookedIds.push(booking.bookingId);
+            sessionStorage.setItem('my_booked_ids', JSON.stringify(sessionBookedIds));
 
             let bookings = JSON.parse(localStorage.getItem('smart_bookings') || "[]");
             bookings.push(booking);
@@ -941,20 +950,47 @@
         // 8. RENDER ACTIVE BOOKINGS (Backend Database + Fallback)
         // ============================================================================
         async function renderBookings() {
-            let bookings = [];
+            let allBookings = [];
             if (backendAvailable) {
                 try {
                     const res = await fetch('/api/appointments', { cache: 'no-store' });
                     if (res.ok) {
-                        bookings = await res.json();
+                        allBookings = await res.json();
                     }
                 } catch (err) {
                     console.warn("Could not fetch backend bookings, using local storage", err);
                 }
             }
 
-            if (!bookings || bookings.length === 0) {
-                bookings = JSON.parse(localStorage.getItem('smart_bookings') || "[]");
+            if (!allBookings || allBookings.length === 0) {
+                allBookings = JSON.parse(localStorage.getItem('smart_bookings') || "[]");
+            }
+
+            const loggedInUserStr = sessionStorage.getItem('loggedInUser');
+            let loggedInUser = null;
+            if (loggedInUserStr) {
+                try { loggedInUser = JSON.parse(loggedInUserStr); } catch(e){}
+            }
+
+            const sessionBookedIds = JSON.parse(sessionStorage.getItem('my_booked_ids') || "[]");
+
+            // Privacy Filter: Only show bookings belonging to THIS user/session
+            let bookings = [];
+            if (loggedInUser) {
+                if (loggedInUser.role === 'ADMIN') {
+                    bookings = allBookings; // Administrator views all
+                } else {
+                    const uName = (loggedInUser.fullName || "").toLowerCase().trim();
+                    const uPhone = (loggedInUser.phone || "").trim();
+                    bookings = allBookings.filter(b => {
+                        const bName = (b.patientName || "").toLowerCase().trim();
+                        const bPhone = (b.contact || "").trim();
+                        return (uName && bName === uName) || (uPhone && bPhone === uPhone) || sessionBookedIds.includes(b.bookingId);
+                    });
+                }
+            } else {
+                // Guest: Only show appointments booked during this browser session
+                bookings = allBookings.filter(b => sessionBookedIds.includes(b.bookingId));
             }
 
             const container = document.getElementById('bookingsListContainer');
