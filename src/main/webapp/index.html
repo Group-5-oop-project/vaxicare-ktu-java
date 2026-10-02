@@ -938,11 +938,21 @@
             if (mapContainer && typeof L !== 'undefined') {
                 const map = L.map('cityMap').setView([11.2588, 75.7804], 12);
 
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 19
-                }).addTo(map);
+                // Map Tile Provider:
+                // If you have a CARTO API key, paste it here. If left empty, it automatically uses Esri World Street Map (100% free, zero key required).
+                const CARTO_API_KEY = ""; 
+
+                if (CARTO_API_KEY && CARTO_API_KEY.trim() !== "") {
+                    L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${CARTO_API_KEY}`, {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                        maxZoom: 19
+                    }).addTo(map);
+                } else {
+                    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: 'Tiles &copy; Esri &mdash; National Geographic, DeLorme, NAVTEQ',
+                        maxZoom: 18
+                    }).addTo(map);
+                }
 
                 const centres = [
                     { name: "District General Hospital", lat: 11.2530, lng: 75.7780, type: "centre", vaccines: "Covishield, Covaxin" },
