@@ -239,9 +239,42 @@ while ($listener.IsListening) {
         }
 
         # API: Get Appointments
-        if ($path -eq "/api/appointments" -and $method -eq "GET") {
+        if (($path -eq "/api/appointments" -or $path -eq "/admin/appointments" -or $path -eq "/api/admin/appointments") -and $method -eq "GET") {
             $appts = Read-JsonList $dbApptsFile
             &$sendJson @($appts)
+            continue
+        }
+
+        # API: Update Appointment Status (Admin - Mark Completed / Mark No-Show)
+        if (($path -eq "/api/appointments/update" -or $path -eq "/admin/update-status") -and $method -eq "POST") {
+            $updateReq = $bodyText | ConvertFrom-Json
+            $bId = ($updateReq.bookingId).ToString().Trim()
+            $newStatus = ($updateReq.status).ToString().Trim().ToUpper()
+
+            $appts = Read-JsonList $dbApptsFile
+            $found = $false
+            for ($i = 0; $i -lt $appts.Count; $i++) {
+                if ($appts[$i].bookingId -eq $bId) {
+                    $appts[$i].status = $newStatus
+                    $found = $true
+                    break
+                }
+            }
+            if ($found) {
+                Save-JsonList $dbApptsFile $appts
+                Write-Host "[ADMIN STATUS UPDATE] $bId marked as: $newStatus" -ForegroundColor Green
+                &$sendJson @{
+                    success = $true
+                    message = "Appointment $bId successfully marked as $newStatus"
+                    bookingId = $bId
+                    status = $newStatus
+                }
+            } else {
+                &$sendJson @{
+                    success = $false
+                    message = "Appointment $bId not found in database"
+                } 404
+            }
             continue
         }
 

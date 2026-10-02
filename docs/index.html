@@ -38,6 +38,7 @@
             <li id="authNavButtons">
                 <button class="btn btn-secondary btn-sm" onclick="openAuthModal('login')">Sign In</button>
                 <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">Register</button>
+                <a href="admin.html" class="btn btn-secondary btn-sm" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd; font-weight:700;">🏥 Hospital Portal</a>
             </li>
             <li id="userProfileNav" style="display: none; align-items: center; gap: 10px;">
                 <span id="userGreeting" style="font-weight: 600; color: var(--dark); font-size: 0.9rem;"></span>
@@ -971,22 +972,53 @@
             section.style.display = 'block';
             if (navLink) navLink.style.display = 'inline-block';
 
-            container.innerHTML = bookings.slice().reverse().map(b => `
-                <div class="card" style="border-left: 5px solid var(--success);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
-                        <strong style="color:var(--primary); font-size:1.1rem;">${b.bookingId}</strong>
-                        <span class="badge badge-success">${b.status || 'CONFIRMED'}</span>
+            container.innerHTML = bookings.slice().reverse().map(b => {
+                const isCompleted = (b.status || '').toUpperCase() === 'COMPLETED';
+                const isNoShow = (b.status || '').toUpperCase() === 'NO_SHOW';
+                
+                let badgeHtml = '';
+                let certActionHtml = '';
+
+                if (isCompleted) {
+                    badgeHtml = '<span class="badge badge-success">✅ VACCINATED (COMPLETED)</span>';
+                    certActionHtml = `
+                        <div style="margin-top: 0.85rem; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button class="btn btn-primary btn-sm" onclick="openCertificateModal('${b.bookingId}')">📜 Download Certificate</button>
+                            <button class="btn btn-secondary btn-sm" onclick="exportXmlCertificateById('${b.bookingId}')">📥 XML Export</button>
+                            <span style="font-size:0.8rem; color:#15803d; font-weight:700;">🔓 Certificate Unlocked</span>
+                        </div>
+                    `;
+                } else if (isNoShow) {
+                    badgeHtml = '<span class="badge badge-danger">⚠️ NO-SHOW</span>';
+                    certActionHtml = `
+                        <div style="margin-top: 0.85rem;">
+                            <span style="font-size:0.82rem; color:#dc2626; font-weight:600;">⚠️ Recorded as No-Show. Please contact the centre to reschedule.</span>
+                        </div>
+                    `;
+                } else {
+                    badgeHtml = '<span class="badge badge-warning">🗓️ SCHEDULED / CONFIRMED</span>';
+                    certActionHtml = `
+                        <div style="margin-top: 0.85rem; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button class="btn btn-secondary btn-sm" style="opacity: 0.75; cursor: pointer;" onclick="alert('🔒 Certificate is currently locked.\\n\\nYour appointment ${b.bookingId} is confirmed. Once hospital medical staff administers your dose and marks it as Completed in the Hospital Portal, your official certificate will automatically unlock!')">🔒 Certificate Locked</button>
+                            <span style="font-size:0.8rem; color:#64748b;">(Unlocks upon completion at hospital)</span>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="card" style="border-left: 5px solid ${isCompleted ? 'var(--success)' : (isNoShow ? 'var(--danger)' : 'var(--primary)')};">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                            <strong style="color:var(--primary); font-size:1.1rem;">${b.bookingId}</strong>
+                            ${badgeHtml}
+                        </div>
+                        <p style="margin: 0.2rem 0;"><strong>Patient:</strong> ${b.patientName} (${b.contact})</p>
+                        <p style="margin: 0.2rem 0;"><strong>Vaccine:</strong> ${b.vaccine}</p>
+                        <p style="margin: 0.2rem 0;"><strong>Centre:</strong> ${b.centre}</p>
+                        <p style="margin: 0.2rem 0; font-size:0.85rem; color:var(--gray-600);"><strong>Scheduled Date:</strong> ${b.date}</p>
+                        ${certActionHtml}
                     </div>
-                    <p style="margin: 0.2rem 0;"><strong>Patient:</strong> ${b.patientName} (${b.contact})</p>
-                    <p style="margin: 0.2rem 0;"><strong>Vaccine:</strong> ${b.vaccine}</p>
-                    <p style="margin: 0.2rem 0;"><strong>Centre:</strong> ${b.centre}</p>
-                    <p style="margin: 0.2rem 0; font-size:0.85rem; color:var(--gray-600);"><strong>Scheduled Date:</strong> ${b.date}</p>
-                    <div style="margin-top: 0.85rem; display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn btn-primary btn-sm" onclick="openCertificateModal('${b.bookingId}')">📜 Download Certificate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="exportXmlCertificateById('${b.bookingId}')">📥 XML Export</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // ============================================================================

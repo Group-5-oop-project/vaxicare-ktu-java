@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Staff & Admin Portal — VaxiCare Clinical Registry</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --teal: #0d9488;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        /* Top Admin Navbar */
+        .admin-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.85rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .admin-brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .admin-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Login Screen */
+        .login-wrapper {
+            min-height: calc(100vh - 75px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
+            border: 1px solid var(--card-border);
+        }
+
+        /* KPI Summary Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--card-border);
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .kpi-card.kpi-success { border-left-color: var(--success); }
+        .kpi-card.kpi-warning { border-left-color: var(--warning); }
+        .kpi-card.kpi-danger  { border-left-color: var(--danger); }
+
+        .kpi-title { font-size: 0.82rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        .kpi-value { font-size: 1.9rem; font-weight: 800; color: #0f172a; }
+
+        /* Clinical Data Table */
+        .table-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .table-toolbar {
+            padding: 1.2rem 1.5rem;
+            background: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-input {
+            padding: 0.55rem 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            min-width: 260px;
+        }
+
+        .filter-select {
+            padding: 0.55rem 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            color: #334155;
+        }
+
+        table.clinical-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        table.clinical-table th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.clinical-table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--card-border);
+            vertical-align: middle;
+        }
+
+        table.clinical-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Action Buttons */
+        .btn-action-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-complete {
+            background: #10b981;
+            color: #ffffff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-complete:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-noshow {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-noshow:hover {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .status-confirmed { background: #e0f2fe; color: #0284c7; }
+        .status-completed { background: #dcfce7; color: #15803d; }
+        .status-noshow    { background: #fee2e2; color: #b91c1c; }
+
+        /* Toast Alert */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 1rem 1.4rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            z-index: 9999;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HOSPITAL ADMIN NAVBAR -->
+    <nav class="admin-nav">
+        <div style="display:flex; align-items:center; gap: 12px;">
+            <a href="index.html" class="admin-brand">🏥 Vaxi<span>Care</span></a>
+            <span class="admin-badge">HOSPITAL & CLINICAL ADMIN</span>
+        </div>
+        <div style="display:flex; align-items:center; gap: 15px;">
+            <a href="index.html" style="font-size: 0.88rem; color: #64748b; text-decoration: none; font-weight: 600;">← Patient Portal</a>
+            <div id="staffSessionNav" style="display: none; align-items: center; gap: 10px;">
+                <span id="staffNameDisplay" style="font-weight: 700; font-size: 0.9rem; color: #334155;">Dr. Radhakrishnan</span>
+                <span class="badge badge-danger">NODAL OFFICER</span>
+                <button class="btn btn-secondary btn-sm" onclick="handleAdminLogout()">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. LOGIN SCREEN (Visible when not authenticated as admin) -->
+    <div id="adminLoginSection" class="login-wrapper">
+        <div class="login-card">
+            <div style="text-align: center; margin-bottom: 1.8rem;">
+                <span style="font-size: 2.5rem;">👨‍⚕️</span>
+                <h2 style="margin: 0.5rem 0 0.3rem; color: #0f172a;">Hospital Staff Login</h2>
+                <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Authorized Clinical Personnel & Nodal Administrators Only</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.85rem; font-weight: 700; color: #475569; display:block; margin-bottom: 4px;">Staff ID / Username</label>
+                    <input type="text" id="adminUsername" class="form-control" placeholder="admin" value="admin" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label style="font-size: 0.85rem; font-weight: 700; color: #475569; display:block; margin-bottom: 4px;">Security Password</label>
+                    <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" value="admin123" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.85rem; font-weight: 700; color: #475569; display:block; margin-bottom: 4px;">Healthcare Centre</label>
+                    <select id="adminCentreSelect" class="form-control" style="background:white;">
+                        <option value="District General Hospital">District General Hospital, Kozhikode</option>
+                        <option value="Govt. Medical College Immunization Hub">Govt. Medical College Immunization Hub</option>
+                        <option value="Cheruthuruthy Primary Health Centre">Cheruthuruthy Primary Health Centre</option>
+                        <option value="Aster MIMS Vaccination Clinic">Aster MIMS Vaccination Clinic</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 0.95rem;">Access Clinical Inoculation Desk →</button>
+            </form>
+
+            <div style="margin-top: 1.5rem; padding: 0.8rem; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; font-size: 0.82rem; color: #64748b; text-align: center;">
+                🔑 <strong>Default Demo Credentials:</strong> <code>admin</code> / <code>admin123</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. HOSPITAL CLINICAL DASHBOARD (Visible after login) -->
+    <div id="adminDashboardSection" style="display: none; padding: 2.5rem 5%;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="margin: 0; font-size: 1.8rem; color: #0f172a;">Clinical Vaccination Desk</h1>
+                <p style="margin: 0.3rem 0 0; color: #64748b; font-size: 0.95rem;">
+                    Active Inoculation Queue & Daily Appointment Confirmation Management
+                </p>
+            </div>
+            <div style="display:flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm" onclick="loadAdminAppointments()">🔄 Refresh Records</button>
+                <button class="btn btn-primary btn-sm" onclick="simulateNewAppointment()">+ Quick Add Mock Patient</button>
+            </div>
+        </div>
+
+        <!-- KPI Metrics -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Scheduled</div>
+                <div class="kpi-value" id="kpiTotal">0</div>
+            </div>
+            <div class="kpi-card kpi-success">
+                <div class="kpi-title">Inoculations Completed</div>
+                <div class="kpi-value" id="kpiCompleted" style="color: var(--success);">0</div>
+            </div>
+            <div class="kpi-card kpi-warning">
+                <div class="kpi-title">Pending / In-Queue</div>
+                <div class="kpi-value" id="kpiPending" style="color: var(--warning);">0</div>
+            </div>
+            <div class="kpi-card kpi-danger">
+                <div class="kpi-title">Recorded No-Shows</div>
+                <div class="kpi-value" id="kpiNoShow" style="color: var(--danger);">0</div>
+            </div>
+        </div>
+
+        <!-- Appointment Table Container -->
+        <div class="table-container">
+            <div class="table-toolbar">
+                <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="tableSearch" class="search-input" placeholder="🔍 Search patient, phone, or booking ID..." oninput="filterAppointments()">
+                    <select id="statusFilter" class="filter-select" onchange="filterAppointments()">
+                        <option value="ALL">All Statuses</option>
+                        <option value="CONFIRMED">Scheduled / Confirmed</option>
+                        <option value="COMPLETED">Completed (Vaccinated)</option>
+                        <option value="NO_SHOW">No-Show</option>
+                    </select>
+                </div>
+                <div style="font-size: 0.85rem; color: #64748b; font-weight: 600;">
+                    Showing <span id="showingCount">0</span> records
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="clinical-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Patient Name</th>
+                            <th>Contact Phone</th>
+                            <th>Vaccine Regimen</th>
+                            <th>Assigned Centre</th>
+                            <th>Scheduled Date</th>
+                            <th>Clinical Status</th>
+                            <th style="text-align: right;">Staff Inoculation Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentTableBody">
+                        <!-- Populated dynamically by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="adminToast" class="toast"></div>
+
+    <script>
+        let appointments = [];
+
+        // Check if admin is currently logged in on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const adminUserStr = sessionStorage.getItem('adminUser');
+            if (adminUserStr) {
+                try {
+                    const admin = JSON.parse(adminUserStr);
+                    showDashboard(admin);
+                } catch(e) {
+                    showLogin();
+                }
+            } else {
+                showLogin();
+            }
+        });
+
+        function showLogin() {
+            document.getElementById('adminLoginSection').style.display = 'flex';
+            document.getElementById('adminDashboardSection').style.display = 'none';
+            document.getElementById('staffSessionNav').style.display = 'none';
+        }
+
+        function showDashboard(admin) {
+            document.getElementById('adminLoginSection').style.display = 'none';
+            document.getElementById('adminDashboardSection').style.display = 'block';
+            document.getElementById('staffSessionNav').style.display = 'flex';
+            document.getElementById('staffNameDisplay').textContent = admin.fullName || "Dr. Radhakrishnan";
+            loadAdminAppointments();
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminUsername').value.trim();
+            const p = document.getElementById('adminPassword').value.trim();
+            const centre = document.getElementById('adminCentreSelect').value;
+
+            if (u === "admin" && p === "admin123") {
+                const adminObj = {
+                    username: "admin",
+                    fullName: "Dr. Radhakrishnan",
+                    role: "ADMIN",
+                    centre: centre
+                };
+                sessionStorage.setItem('adminUser', JSON.stringify(adminObj));
+                showDashboard(adminObj);
+                showToast("✅ Authenticated as Hospital Medical Officer");
+            } else {
+                alert("❌ Invalid Admin Credentials. Default login: admin / admin123");
+            }
+        }
+
+        function handleAdminLogout() {
+            sessionStorage.removeItem('adminUser');
+            showLogin();
+            showToast("Signed out from Clinical Desk.");
+        }
+
+        async function loadAdminAppointments() {
+            try {
+                const res = await fetch('/api/appointments', { cache: 'no-store' });
+                if (res.ok) {
+                    appointments = await res.json();
+                }
+            } catch (err) {
+                console.warn("Backend API unavailable, using local mock persistence", err);
+            }
+
+            if (!appointments || appointments.length === 0) {
+                appointments = JSON.parse(localStorage.getItem('smart_bookings') || "[]");
+            }
+
+            // Provide default mock records if completely empty
+            if (appointments.length === 0) {
+                appointments = [
+                    { bookingId: "BK-1001", patientName: "Arya Prakash", contact: "9876543210", vaccine: "Covishield", centre: "District General Hospital", date: "2026-10-02", status: "CONFIRMED" },
+                    { bookingId: "BK-1236", patientName: "Sneha Patel", contact: "9847555666", vaccine: "Covaxin", centre: "Govt. Medical College Immunization Hub", date: "2026-10-02", status: "CONFIRMED" },
+                    { bookingId: "BK-6208", patientName: "Rohit Menon", contact: "9874561230", vaccine: "Corbevax", centre: "Cheruthuruthy Primary Health Centre", date: "2026-10-02", status: "COMPLETED" }
+                ];
+                localStorage.setItem('smart_bookings', JSON.stringify(appointments));
+            }
+
+            renderTable(appointments);
+            updateKpis(appointments);
+        }
+
+        function updateKpis(data) {
+            const total = data.length;
+            const completed = data.filter(a => (a.status || "").toUpperCase() === "COMPLETED").length;
+            const noShow = data.filter(a => (a.status || "").toUpperCase() === "NO_SHOW").length;
+            const pending = total - completed - noShow;
+
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiCompleted').textContent = completed;
+            document.getElementById('kpiPending').textContent = pending >= 0 ? pending : 0;
+            document.getElementById('kpiNoShow').textContent = noShow;
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('appointmentTableBody');
+            document.getElementById('showingCount').textContent = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 2.5rem; color:#94a3b8;">No matching scheduled appointments found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.slice().reverse().map(a => {
+                const status = (a.status || "CONFIRMED").toUpperCase();
+                let statusBadge = "";
+                let actionsHtml = "";
+
+                if (status === "COMPLETED") {
+                    statusBadge = `<span class="status-badge status-completed">✅ COMPLETED</span>`;
+                    actionsHtml = `
+                        <div class="btn-action-group" style="justify-content: flex-end;">
+                            <span style="font-size:0.8rem; color:#15803d; font-weight:700;">Inoculation Confirmed</span>
+                            <button class="btn btn-secondary btn-sm" onclick="revertStatus('${a.bookingId}')" style="padding: 2px 8px; font-size:0.75rem;">Revert</button>
+                        </div>
+                    `;
+                } else if (status === "NO_SHOW") {
+                    statusBadge = `<span class="status-badge status-noshow">⚠️ NO-SHOW</span>`;
+                    actionsHtml = `
+                        <div class="btn-action-group" style="justify-content: flex-end;">
+                            <button class="btn btn-secondary btn-sm" onclick="updateAppointmentStatus('${a.bookingId}', 'CONFIRMED')" style="padding: 2px 8px; font-size:0.75rem;">Re-schedule</button>
+                        </div>
+                    `;
+                } else {
+                    statusBadge = `<span class="status-badge status-confirmed">🗓️ CONFIRMED</span>`;
+                    actionsHtml = `
+                        <div class="btn-action-group" style="justify-content: flex-end;">
+                            <button class="btn-complete" onclick="updateAppointmentStatus('${a.bookingId}', 'COMPLETED')">
+                                ✔ Mark Completed
+                            </button>
+                            <button class="btn-noshow" onclick="updateAppointmentStatus('${a.bookingId}', 'NO_SHOW')">
+                                ✖ Mark No-Show
+                            </button>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <tr id="row-${a.bookingId}">
+                        <td><strong style="color:var(--primary); font-family: monospace; font-size:0.95rem;">${a.bookingId}</strong></td>
+                        <td><strong>${a.patientName}</strong></td>
+                        <td>${a.contact}</td>
+                        <td><span class="badge badge-info">${a.vaccine}</span></td>
+                        <td><small style="color:#475569;">${a.centre || 'District General Hospital'}</small></td>
+                        <td>${a.date}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionsHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function updateAppointmentStatus(bookingId, newStatus) {
+            // 1. Try updating Backend REST Endpoint
+            try {
+                const res = await fetch('/api/appointments/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bookingId: bookingId, status: newStatus })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("Backend updated:", data);
+                }
+            } catch (err) {
+                console.warn("Backend update failed, persisting in local storage", err);
+            }
+
+            // 2. Update local state & LocalStorage
+            for (let i = 0; i < appointments.length; i++) {
+                if (appointments[i].bookingId === bookingId) {
+                    appointments[i].status = newStatus;
+                    break;
+                }
+            }
+            localStorage.setItem('smart_bookings', JSON.stringify(appointments));
+
+            filterAppointments();
+            updateKpis(appointments);
+
+            if (newStatus === "COMPLETED") {
+                showToast(`✅ ${bookingId} marked as COMPLETED. Patient certificate unlocked!`);
+            } else if (newStatus === "NO_SHOW") {
+                showToast(`⚠️ ${bookingId} recorded as No-Show.`);
+            } else {
+                showToast(`Status for ${bookingId} updated.`);
+            }
+        }
+
+        function revertStatus(bookingId) {
+            updateAppointmentStatus(bookingId, 'CONFIRMED');
+        }
+
+        function filterAppointments() {
+            const query = (document.getElementById('tableSearch').value || "").toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = appointments.filter(a => {
+                const matchQuery = 
+                    (a.bookingId || "").toLowerCase().includes(query) ||
+                    (a.patientName || "").toLowerCase().includes(query) ||
+                    (a.contact || "").toLowerCase().includes(query) ||
+                    (a.vaccine || "").toLowerCase().includes(query);
+
+                const aStatus = (a.status || "CONFIRMED").toUpperCase();
+                const matchStatus = (statusFilter === "ALL") || (aStatus === statusFilter);
+
+                return matchQuery && matchStatus;
+            });
+
+            renderTable(filtered);
+        }
+
+        function simulateNewAppointment() {
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            const mockPatients = ["Ananya Nair", "Kavya Suresh", "Vishnu Prasad", "Meera Krishnan", "Arjun Das"];
+            const mockVaccines = ["Covishield", "Covaxin", "Corbevax", "Hepatitis B"];
+            const randomPatient = mockPatients[Math.floor(Math.random() * mockPatients.length)];
+            const randomVaccine = mockVaccines[Math.floor(Math.random() * mockVaccines.length)];
+
+            const newAppt = {
+                bookingId: `BK-${rand}`,
+                patientName: randomPatient,
+                contact: `9847${Math.floor(100000 + Math.random() * 900000)}`,
+                vaccine: randomVaccine,
+                centre: "District General Hospital",
+                date: new Date().toISOString().split('T')[0],
+                status: "CONFIRMED"
+            };
+
+            appointments.push(newAppt);
+            localStorage.setItem('smart_bookings', JSON.stringify(appointments));
+            filterAppointments();
+            updateKpis(appointments);
+            showToast(`➕ Added new appointment for ${randomPatient} (${newAppt.bookingId})`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('adminToast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
