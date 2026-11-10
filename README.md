@@ -1,118 +1,96 @@
-💉 VaxiCare — Smart Clinical Vaccination Management System
-KTU S3 Computer Science & Engineering — Java OOP Mini Project
+# 💉 VaxiCare — Smart Clinical Vaccination Management System
+> **KTU S3 Computer Science & Engineering — Java OOP Mini Project**
 
-A comprehensive, full-stack clinical immunization management platform designed to automate multi-dose vaccine scheduling, monitor cold-chain inventory, triage adverse side-effects (AEFI), and provide an interactive real-time patient portal.
+A comprehensive, full-stack clinical immunization management platform designed to automate multi-dose vaccine scheduling, monitor cold-chain inventory, triage adverse side-effects (AEFI), and provide an interactive real-time patient and hospital portal.
 
-🌐 Live Web Demo: https://group-5-oop-project.github.io/vaxicare-ktu-java/
-📂 GitHub Repository: https://github.com/Group-5-oop-project/vaxicare-ktu-java
+🌐 **Live Web Demo**: [https://group-5-oop-project.github.io/vaxicare-ktu-java/](https://group-5-oop-project.github.io/vaxicare-ktu-java/)  
+📂 **GitHub Repository**: [https://github.com/Group-5-oop-project/vaxicare-ktu-java](https://github.com/Group-5-oop-project/vaxicare-ktu-java)
 
-👥 Project Team (Group of 4)
-Sl No.	Name	Register Number / Roll No.	Contribution / Role
-1	*Member 1 *	[Reg No]	Architecture & Full-Stack Integration
-2	Member 2	[Reg No]	Core Java OOP & Business Logic
-3	Member 3	[Reg No]	Web UI/UX & Responsive Front-End
-4	Member 4	[Reg No]	Database Persistence & Testing
+---
 
-A Java-based Vaccination Management System developed as part of the KTU Object-Oriented Programming (OOP) project.
+## 👥 Project Team (Group 5)
+| Sl No. | Name | Register Number / Roll No. | Contribution / Role |
+|:---:|:---|:---|:---|
+| 1 | **ARYA PRAKASH** | JEC25CS061 | Architecture & Full-Stack Integration |
+| 2 | **AMRUTHAVARSHINI KM** | JEC25CS037 | Core Java OOP & Business Logic |
+| 3 | **Aarcha BS** | JEC25CS005 | Web UI/UX & Responsive Front-End |
+| 4 | **Ashline Mary Rajesh** | JEC25CS064 | Database Persistence & Testing |
 
-📌 About the Project
-VaxiCare is a vaccination management system designed to help users maintain their vaccination records, manage appointments, track upcoming vaccinations, and receive reminders for due or overdue vaccinations.
+---
 
-The project demonstrates the practical application of Object-Oriented Programming concepts in Java, along with database connectivity and modular software design.
+## 📌 About the Project
 
-🎯 Objectives
-Maintain and manage vaccination records
-Book and update vaccination appointments
-Search and view vaccination history
-Calculate upcoming vaccination due dates
-Identify completed, upcoming, and overdue vaccinations
-Provide vaccination reminders
-Generate vaccination-related reports
-Demonstrate OOP concepts through a real-world application
-🛠️ Technologies Used
-Technology	Purpose
-☕ Java	Application development
-🗄️ MySQL	Database management
-🔗 JDBC	Java–Database connectivity
-🧩 OOP	Software design and implementation
-🌐 Git & GitHub	Version control and collaboration
-🧠 OOP Concepts Demonstrated
-The project makes use of core Java OOP concepts, including:
+**VaxiCare** is a clinical vaccination management platform designed to help users maintain their vaccination records, manage appointment slots, track upcoming vaccinations, and receive reminders for due or overdue vaccinations.
 
-Classes and Objects
-Encapsulation
-Inheritance
-Polymorphism
-Abstraction
-Method Overloading / Overriding
-Exception Handling
-Collections
-Database Connectivity using JDBC
-📂 Project Modules
-The system is divided into multiple modules to support collaborative development.
+The project demonstrates the practical application of **Object-Oriented Programming (OOP) in Java**, along with database connectivity (JDBC), REST API persistence, and modular software design.
 
-👤 User Management
-Handles user-related information and basic system interactions.
+---
 
-💉 Vaccination & Appointment Management
-Responsible for:
+## 🎯 Objectives
 
-Adding vaccination records
-Updating vaccination records
-Viewing vaccination history
-Searching vaccination records
-Booking appointments
-Updating appointments
-Calculating the next vaccination due date
-🔔 Reminder & Reports Management
-Responsible for:
+* Maintain and manage clinical vaccination records
+* Book and update vaccination appointments
+* Search and view patient vaccination history
+* Calculate upcoming vaccination due dates and enforce clinical interval gaps
+* Multithreaded emergency triage queue for adverse effects (AEFI)
+* Generate digitally signed XML & PDF vaccination certificates
+* Hospital / Admin Inoculation desk for medical officers to verify and complete appointments
+* Demonstrate core OOP concepts through a real-world clinical application
 
-Checking upcoming vaccination dates
-Identifying overdue vaccinations
-Categorizing vaccination status
-Generating vaccination reports
-Providing vaccination reminders
-⚙️ System Management
-Handles overall system coordination and administrative functionality.
+---
 
-🗃️ Database
-The application uses MySQL to store and manage vaccination-related information.
+## 🛠️ Tech Stack
 
-Example tables include:
+| Technology | Purpose |
+|:---|:---|
+| ☕ **Java 17 / 21** | Application Development & OOP Business Logic |
+| 🗄️ **MySQL / SQLite** | Relational Database & Offline Storage |
+| 🔗 **JDBC** | Java–Database Connectivity (PreparedStatement, ACID Transactions) |
+| 🌐 **HTML5, CSS3, JS** | Responsive Glassmorphic Patient Portal & Hospital Admin Desk |
+| 🗺️ **Leaflet.js** | Interactive City Map with Designated Immunization Hubs |
+| 📜 **Java DOM Parser** | XML Catalog Parsing & Dynamic Digital Certificate Generation |
+| 🐙 **Git & GitHub** | Collaborative Branching & Version Control |
 
-VaccinationRecords
-Appointments
-Users
-The Java application communicates with the database using JDBC. Each team member can develop their assigned module in a separate branch before integrating the changes into the main branch.
+---
 
-🚀 Getting Started
-1. Clone the Repository
-git clone https://github.com/Group-5-oop-project/vaxicare-ktu-java.git
-2. Open the Project
-Open the project using an IDE such as:
+## 🧠 OOP Concepts Demonstrated
 
-IntelliJ IDEA
-Eclipse
-Apache NetBeans
-3. Configure the Database
-Create the required MySQL database and tables.
+The project demonstrates core Java OOP principles required for the KTU S3 Lab Exam & Viva:
 
-Update the database connection details in the project configuration.
+* **Classes and Objects**: Model entities (`Patient`, `Vaccine`, `Appointment`, `Admin`, `AefiReport`)
+* **Inheritance**: Base class `Person` extended by `Patient` and `Admin`; Base class `Vaccine` extended by `ViralVectorVaccine`, `InactivatedVaccine`, and `ProteinSubunitVaccine`
+* **Polymorphism**: Dynamic method dispatch across vaccine formulations for cold-chain storage and dosage gap calculations
+* **Abstraction & Interfaces**: Contracts including `Schedulable`, `Alertable`, and `XmlExportable`
+* **Encapsulation**: Private fields protected by getters, setters, and clinical validation
+* **Custom Exception Handling**: User-defined domain exceptions (`InsufficientGapException`, `SlotUnavailableException`)
+* **Multithreading & Thread Synchronization**: Priority triage worker queue (`AefiTriageService`)
+* **Database Connectivity**: Robust JDBC data access layer (`AppointmentDAO`, `UserDAO`, `VaccineDAO`, `CentreDAO`, `AefiDAO`)
 
-⚠️ Do not commit passwords, API keys, or other sensitive credentials to GitHub.
+---
 
-4. Run the Application
-Compile and run the main Java application class from your IDE.
+## 💻 How to Run the Project
 
-🔗 Project Repository
-GitHub: https://github.com/Group-5-oop-project/vaxicare-ktu-java
+### Option A: 1-Click Launch (Web Portal & REST Server)
+1. Double-click **`start-server.bat`** in the project directory.
+2. The server starts on `http://localhost:8080/` and opens in your default browser.
+3. Access:
+   * **Patient Portal**: `http://localhost:8080/`
+   * **Hospital / Admin Desk**: `http://localhost:8080/admin.html` (Demo login: `admin` / `admin123`)
 
-👥 Team
-VaxiCare is developed as a collaborative academic project for the KTU Object-Oriented Programming course.
+### Option B: Core Java Console & KTU Viva Verification Suite
+1. Open the project in VS Code / IntelliJ IDEA.
+2. Run `src/main/java/com/vaxicare/MainApp.java`.
+3. Choose **Option 7** to run the complete automated KTU OOP verification suite.
 
-Each team member contributes to a specific module while following a shared GitHub workflow.
+---
 
-📚 Academic Project
-Course: Object-Oriented Programming Language: Java University: Jyothi Engineering College Project: VaxiCare – Vaccination Management System
+## 📚 Academic Project Information
 
-⭐ Built with Java, teamwork, and a little bit of debugging pain.
+* **Course**: Object-Oriented Programming (CST 205 / CSL 203)
+* **Degree**: B.Tech in Computer Science & Engineering (Semester 3)
+* **University**: APJ Abdul Kalam Technological University (KTU)
+* **Institution**: Jyothi Engineering College, Cheruthuruthy, Thrissur
+
+---
+
+⭐ *Built with Java, teamwork, and a little bit of debugging pain.*
