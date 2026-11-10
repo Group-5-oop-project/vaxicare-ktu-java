@@ -3,8 +3,8 @@ KTU S3 Computer Science & Engineering — Java OOP Mini Project
 
 A comprehensive, full-stack clinical immunization management platform designed to automate multi-dose vaccine scheduling, monitor cold-chain inventory, triage adverse side-effects (AEFI), and provide an interactive real-time patient portal.
 
-🌐 Live Web Demo: https://arya200631-del.github.io/vaxicare-ktu-java/
-📂 GitHub Repository: https://github.com/arya200631-del/vaxicare-ktu-java
+🌐 Live Web Demo: https://group-5-oop-project.github.io/vaxicare-ktu-java/
+📂 GitHub Repository: https://github.com/Group-5-oop-project/vaxicare-ktu-java
 
 👥 Project Team (Group of 4)
 Sl No.	Name	Register Number / Roll No.	Contribution / Role
@@ -87,7 +87,7 @@ The Java application communicates with the database using JDBC. Each team member
 
 🚀 Getting Started
 1. Clone the Repository
-git clone https://github.com/arya200631-del/vaxicare-ktu-java.git
+git clone https://github.com/Group-5-oop-project/vaxicare-ktu-java.git
 2. Open the Project
 Open the project using an IDE such as:
 
@@ -105,7 +105,7 @@ Update the database connection details in the project configuration.
 Compile and run the main Java application class from your IDE.
 
 🔗 Project Repository
-GitHub: https://github.com/arya200631-del/vaxicare-ktu-java
+GitHub: https://github.com/Group-5-oop-project/vaxicare-ktu-java
 
 👥 Team
 VaxiCare is developed as a collaborative academic project for the KTU Object-Oriented Programming course.
